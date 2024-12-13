@@ -1,1 +1,25 @@
-
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2021-04-01",
+      "location": "East US",
+      "properties": {},
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "name": "[parameters('storageAccountName')]",
+      "tags": {
+        "environment": "Production"
+      }
+    }
+  ],
+  "parameters": {
+    "storageAccountName": {
+      "type": "string",
+      "defaultValue": "mystorageaccount"
+    }
+  }
+}
