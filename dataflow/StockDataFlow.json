@@ -1,0 +1,221 @@
+{
+	"name": "StockDataFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AdidasStockData",
+						"type": "DatasetReference"
+					},
+					"name": "AdidasStockSource"
+				},
+				{
+					"dataset": {
+						"referenceName": "NikeStockData",
+						"type": "DatasetReference"
+					},
+					"name": "NikeStockSource"
+				},
+				{
+					"dataset": {
+						"referenceName": "PumaStockData",
+						"type": "DatasetReference"
+					},
+					"name": "PumaStockSource"
+				},
+				{
+					"dataset": {
+						"referenceName": "UnderArmourStockData",
+						"type": "DatasetReference"
+					},
+					"name": "UnderArmourStockSource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SilverStockData",
+						"type": "DatasetReference"
+					},
+					"name": "AllStockSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AdidasStockSelect"
+				},
+				{
+					"name": "NikeStockSelect"
+				},
+				{
+					"name": "PumaStockSelect"
+				},
+				{
+					"name": "UnderArmourStockSelect"
+				},
+				{
+					"name": "AdidasNikeStockJoin"
+				},
+				{
+					"name": "PumaStockJoin"
+				},
+				{
+					"name": "UnderArmourStockJoin"
+				},
+				{
+					"name": "AllStockSelect"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Date as date 'yyyy-MM-dd',",
+				"          Open as float,",
+				"          High as float,",
+				"          Low as float,",
+				"          Close as float,",
+				"          {Adj Close} as float,",
+				"          Volume as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> AdidasStockSource",
+				"source(output(",
+				"          Date as date 'yyyy-MM-dd',",
+				"          Open as float,",
+				"          High as float,",
+				"          Low as float,",
+				"          Close as float,",
+				"          {Adj Close} as float,",
+				"          Volume as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> NikeStockSource",
+				"source(output(",
+				"          Date as date 'yyyy-MM-dd',",
+				"          Open as float,",
+				"          High as float,",
+				"          Low as float,",
+				"          Close as float,",
+				"          {Adj Close} as float,",
+				"          Volume as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> PumaStockSource",
+				"source(output(",
+				"          Date as date 'yyyy-MM-dd',",
+				"          Open as float,",
+				"          High as float,",
+				"          Low as float,",
+				"          Close as float,",
+				"          {Adj Close} as float,",
+				"          Volume as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> UnderArmourStockSource",
+				"AdidasStockSource select(mapColumn(",
+				"          Date,",
+				"          Open_Price = Open,",
+				"          Max_Price = High,",
+				"          Min_Price = Low,",
+				"          Close_Price = Close,",
+				"          Adjusted_Close_Price = {Adj Close},",
+				"          Trade_Volume = Volume",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> AdidasStockSelect",
+				"NikeStockSource select(mapColumn(",
+				"          Date,",
+				"          Open_Price = Open,",
+				"          Max_Price = High,",
+				"          Min_Price = Low,",
+				"          Close_Price = Close,",
+				"          Adjusted_Close_Price = {Adj Close},",
+				"          Trade_Volume = Volume",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> NikeStockSelect",
+				"PumaStockSource select(mapColumn(",
+				"          Date,",
+				"          Open_Price = Open,",
+				"          Max_Price = High,",
+				"          Min_Price = Low,",
+				"          Close_Price = Close,",
+				"          Adjusted_Close_Price = {Adj Close},",
+				"          Trade_Volume = Volume",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> PumaStockSelect",
+				"UnderArmourStockSource select(mapColumn(",
+				"          Date,",
+				"          Open_Price = Open,",
+				"          Max_Price = High,",
+				"          Min_Price = Low,",
+				"          Close_Price = Close,",
+				"          Adjusted_Close_Price = {Adj Close},",
+				"          Trade_Volume = Volume",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> UnderArmourStockSelect",
+				"AdidasStockSelect, NikeStockSelect join(AdidasStockSelect@Date == NikeStockSelect@Date,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> AdidasNikeStockJoin",
+				"AdidasNikeStockJoin, PumaStockSelect join(NikeStockSelect@Date == PumaStockSelect@Date,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> PumaStockJoin",
+				"PumaStockJoin, UnderArmourStockSelect join(AdidasStockSelect@Date == UnderArmourStockSelect@Date,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> UnderArmourStockJoin",
+				"UnderArmourStockJoin select(mapColumn(",
+				"          Date = AdidasStockSelect@Date,",
+				"          Adidas_Open_Price = AdidasStockSelect@Open_Price,",
+				"          Adidas_Max_Price = AdidasStockSelect@Max_Price,",
+				"          Adidas_Min_Price = AdidasStockSelect@Min_Price,",
+				"          Adidas_Close_Price = AdidasStockSelect@Close_Price,",
+				"          Adidas_Adjusted_Close_Price = AdidasStockSelect@Adjusted_Close_Price,",
+				"          Adidas_Trade_Volume = AdidasStockSelect@Trade_Volume,",
+				"          Date = NikeStockSelect@Date,",
+				"          Nike_Open_Price = NikeStockSelect@Open_Price,",
+				"          Nike_Max_Price = NikeStockSelect@Max_Price,",
+				"          Nike_Min_Price = NikeStockSelect@Min_Price,",
+				"          Nike_Close_Price = NikeStockSelect@Close_Price,",
+				"          Nike_Adjusted_Close_Price = NikeStockSelect@Adjusted_Close_Price,",
+				"          Nike_Trade_Volume = NikeStockSelect@Trade_Volume,",
+				"          Date = PumaStockSelect@Date,",
+				"          Puma_Open_Price = PumaStockSelect@Open_Price,",
+				"          Puma_Max_Price = PumaStockSelect@Max_Price,",
+				"          Puma_Min_Price = PumaStockSelect@Min_Price,",
+				"          Puma_Close_Price = PumaStockSelect@Close_Price,",
+				"          Puma_Adjusted_Close_Price = PumaStockSelect@Adjusted_Close_Price,",
+				"          Puma_Trade_Volume = PumaStockSelect@Trade_Volume,",
+				"          Date = UnderArmourStockSelect@Date,",
+				"          UA_Open_Price = UnderArmourStockSelect@Open_Price,",
+				"          UA_Max_Price = UnderArmourStockSelect@Max_Price,",
+				"          UA_Min_Price = UnderArmourStockSelect@Min_Price,",
+				"          UA_Close_Price = UnderArmourStockSelect@Close_Price,",
+				"          UA_Adjusted_Close_Price = UnderArmourStockSelect@Adjusted_Close_Price,",
+				"          UA_Trade_Volume = UnderArmourStockSelect@Trade_Volume",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> AllStockSelect",
+				"AllStockSelect sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> AllStockSink"
+			]
+		}
+	}
+}

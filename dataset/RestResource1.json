@@ -1,0 +1,19 @@
+{
+	"name": "RestResource1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "RestService1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "search.mediacloud.org/search?q=Nike&nq=&start=01-01-2022&end=11-01-2024&p=onlinenews-mediacloud&ss=&cs=34412234&any=any&name=Nike&edit=false\n\n\n",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

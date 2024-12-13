@@ -1,0 +1,57 @@
+{
+	"name": "AdidasStockData",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "HistoricalStockLayer"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "adidas_data.csv",
+				"folderPath": "bronze/historical_stock",
+				"fileSystem": "team5blob"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Date",
+				"type": "String"
+			},
+			{
+				"name": "Open",
+				"type": "String"
+			},
+			{
+				"name": "High",
+				"type": "String"
+			},
+			{
+				"name": "Low",
+				"type": "String"
+			},
+			{
+				"name": "Close",
+				"type": "String"
+			},
+			{
+				"name": "Adj Close",
+				"type": "String"
+			},
+			{
+				"name": "Volume",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

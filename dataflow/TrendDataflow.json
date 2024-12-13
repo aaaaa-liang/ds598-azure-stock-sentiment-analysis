@@ -1,0 +1,254 @@
+{
+	"name": "TrendDataflow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AdidasTrendData",
+						"type": "DatasetReference"
+					},
+					"name": "AdidasTrendSource"
+				},
+				{
+					"dataset": {
+						"referenceName": "NikeTrendData",
+						"type": "DatasetReference"
+					},
+					"name": "NikeTrendSource"
+				},
+				{
+					"dataset": {
+						"referenceName": "PumaTrendData",
+						"type": "DatasetReference"
+					},
+					"name": "PumaTrendSource"
+				},
+				{
+					"dataset": {
+						"referenceName": "UATrendData",
+						"type": "DatasetReference"
+					},
+					"name": "UATrendSource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SilverTrendData",
+						"type": "DatasetReference"
+					},
+					"name": "Sink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AdidasSelect"
+				},
+				{
+					"name": "NikeSelect"
+				},
+				{
+					"name": "PumaSelect"
+				},
+				{
+					"name": "UASelect"
+				},
+				{
+					"name": "AdidasDerivedColumn1"
+				},
+				{
+					"name": "AdidasDerivedColumn2"
+				},
+				{
+					"name": "AdidasFlatten"
+				},
+				{
+					"name": "NikeDerivedColumn1"
+				},
+				{
+					"name": "NikeDerivedColumn2"
+				},
+				{
+					"name": "NikeFlatten"
+				},
+				{
+					"name": "PumaDerivedColumn1"
+				},
+				{
+					"name": "PumaDerivedColumn2"
+				},
+				{
+					"name": "PumaFlatten"
+				},
+				{
+					"name": "UAderivedColumn1"
+				},
+				{
+					"name": "UADerivedColumn2"
+				},
+				{
+					"name": "UAFLatten"
+				},
+				{
+					"name": "AdidasNikeJoin"
+				},
+				{
+					"name": "PumaJoin"
+				},
+				{
+					"name": "UAJoin"
+				},
+				{
+					"name": "FinalSelect"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Week as date 'MM/dd/yy',",
+				"          {adidas: (United States)} as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> AdidasTrendSource",
+				"source(output(",
+				"          Week as date 'MM/dd/yy',",
+				"          {nike: (United States)} as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> NikeTrendSource",
+				"source(output(",
+				"          Week as date 'MM/dd/yy',",
+				"          {puma: (United States)} as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> PumaTrendSource",
+				"source(output(",
+				"          Week as date 'MM/dd/yy',",
+				"          {Under Armor: (United States)} as short",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> UATrendSource",
+				"AdidasTrendSource select(mapColumn(",
+				"          Date = Week,",
+				"          Adidas = {adidas: (United States)}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> AdidasSelect",
+				"NikeTrendSource select(mapColumn(",
+				"          Date = Week,",
+				"          Nike = {nike: (United States)}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> NikeSelect",
+				"PumaTrendSource select(mapColumn(",
+				"          Date = Week,",
+				"          Puma = {puma: (United States)}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> PumaSelect",
+				"UATrendSource select(mapColumn(",
+				"          Date = Week,",
+				"          {Under Armor} = {Under Armor: (United States)}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> UASelect",
+				"AdidasSelect derive(DateDay1 = toString(Date),",
+				"          DateDay2 = toString(addDays(Date, 1)),",
+				"          DateDay3 = toString(addDays(Date, 2)),",
+				"          DateDay4 = toString(addDays(Date, 3)),",
+				"          DateDay5 = toString(addDays(Date, 4)),",
+				"          DateDay6 = toString(addDays(Date, 5)),",
+				"          DateDay7 = toString(addDays(Date, 6))) ~> AdidasDerivedColumn1",
+				"AdidasDerivedColumn1 derive(dateRange = array(DateDay1, DateDay2, DateDay3, DateDay4, DateDay5, DateDay6, DateDay7)) ~> AdidasDerivedColumn2",
+				"AdidasDerivedColumn2 foldDown(unroll(dateRange, dateRange),",
+				"     mapColumn(",
+				"          Date = dateRange,",
+				"          Adidas",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> AdidasFlatten",
+				"NikeSelect derive(DateDay1 = toString(Date),",
+				"          DateDay2 = toString(addDays(Date, 1)),",
+				"          DateDay3 = toString(addDays(Date, 2)),",
+				"          DateDay4 = toString(addDays(Date, 3)),",
+				"          DateDay5 = toString(addDays(Date, 4)),",
+				"          DateDay6 = toString(addDays(Date, 5)),",
+				"          DateDay7 = toString(addDays(Date, 6))) ~> NikeDerivedColumn1",
+				"NikeDerivedColumn1 derive(dateRange = array(DateDay1, DateDay2, DateDay3, DateDay4, DateDay5, DateDay6, DateDay7)) ~> NikeDerivedColumn2",
+				"NikeDerivedColumn2 foldDown(unroll(dateRange, dateRange),",
+				"     mapColumn(",
+				"          Date = dateRange,",
+				"          Nike",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> NikeFlatten",
+				"PumaSelect derive(DateDay1 = toString(Date),",
+				"          DateDay2 = toString(addDays(Date, 1)),",
+				"          DateDay3 = toString(addDays(Date, 2)),",
+				"          DateDay4 = toString(addDays(Date, 3)),",
+				"          DateDay5 = toString(addDays(Date, 4)),",
+				"          DateDay6 = toString(addDays(Date, 5)),",
+				"          DateDay7 = toString(addDays(Date, 6))) ~> PumaDerivedColumn1",
+				"PumaDerivedColumn1 derive(dateRange = array(DateDay1, DateDay2, DateDay3, DateDay4, DateDay5, DateDay6, DateDay7)) ~> PumaDerivedColumn2",
+				"PumaDerivedColumn2 foldDown(unroll(dateRange, dateRange),",
+				"     mapColumn(",
+				"          Date = dateRange,",
+				"          Puma",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> PumaFlatten",
+				"UASelect derive(DateDay1 = toString(Date),",
+				"          DateDay2 = toString(addDays(Date, 1)),",
+				"          DateDay3 = toString(addDays(Date, 2)),",
+				"          DateDay4 = toString(addDays(Date, 3)),",
+				"          DateDay5 = toString(addDays(Date, 4)),",
+				"          DateDay6 = toString(addDays(Date, 5)),",
+				"          DateDay7 = toString(addDays(Date, 6))) ~> UAderivedColumn1",
+				"UAderivedColumn1 derive(dateRange = array(DateDay1, DateDay2, DateDay3, DateDay4, DateDay5, DateDay6, DateDay7)) ~> UADerivedColumn2",
+				"UADerivedColumn2 foldDown(unroll(dateRange, dateRange),",
+				"     mapColumn(",
+				"          Date = dateRange,",
+				"          {Under Armor}",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> UAFLatten",
+				"AdidasFlatten, NikeFlatten join(AdidasFlatten@Date == NikeFlatten@Date,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> AdidasNikeJoin",
+				"AdidasNikeJoin, PumaFlatten join(NikeFlatten@Date == PumaFlatten@Date,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> PumaJoin",
+				"PumaJoin, UAFLatten join(AdidasFlatten@Date == UAFLatten@Date,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> UAJoin",
+				"UAJoin select(mapColumn(",
+				"          Date = AdidasFlatten@Date,",
+				"          Adidas,",
+				"          Nike,",
+				"          Puma,",
+				"          {Under Armor}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> FinalSelect",
+				"FinalSelect sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> Sink"
+			]
+		}
+	}
+}

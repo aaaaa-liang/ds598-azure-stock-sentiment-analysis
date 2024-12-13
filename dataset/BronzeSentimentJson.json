@@ -1,0 +1,115 @@
+{
+	"name": "BronzeSentimentJson",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "SentimentLayer"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "cleaned_robust_combined_nke_daily_news_sentiment.json",
+				"folderPath": "bronze/sentiment_data",
+				"fileSystem": "team5blob"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"items": {
+					"type": "string"
+				},
+				"sentiment_score_definition": {
+					"type": "string"
+				},
+				"relevance_score_definition": {
+					"type": "string"
+				},
+				"feed": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"title": {
+								"type": "string"
+							},
+							"url": {
+								"type": "string"
+							},
+							"time_published": {
+								"type": "string"
+							},
+							"authors": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"summary": {
+								"type": "string"
+							},
+							"banner_image": {
+								"type": "string"
+							},
+							"source": {
+								"type": "string"
+							},
+							"category_within_source": {
+								"type": "string"
+							},
+							"source_domain": {
+								"type": "string"
+							},
+							"topics": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"topic": {
+											"type": "string"
+										},
+										"relevance_score": {
+											"type": "string"
+										}
+									}
+								}
+							},
+							"overall_sentiment_score": {
+								"type": "number"
+							},
+							"overall_sentiment_label": {
+								"type": "string"
+							},
+							"ticker_sentiment": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"ticker": {
+											"type": "string"
+										},
+										"relevance_score": {
+											"type": "string"
+										},
+										"ticker_sentiment_score": {
+											"type": "string"
+										},
+										"ticker_sentiment_label": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

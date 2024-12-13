@@ -1,0 +1,49 @@
+{
+	"name": "DelimitedTextHTTP",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HttpServer1",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"cs": {
+				"type": "string",
+				"defaultValue": "34412234"
+			},
+			"query": {
+				"type": "string",
+				"defaultValue": "\"Nike\""
+			},
+			"start_Date": {
+				"type": "string",
+				"defaultValue": "\"2022-11-01\""
+			},
+			"end_Date": {
+				"type": "string",
+				"defaultValue": "\"2024-11-01\""
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": {
+					"value": "stories?query=@{dataset().query}&start_date=@{dataset().start_Date}&end_date=@{dataset().end_Date}&collection_ids=34412234\n",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"rowDelimiter": "\n",
+			"escapeChar": "\\",
+			"firstRowAsHeader": false,
+			"quoteChar": null
+		},
+		"schema": [
+			{
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

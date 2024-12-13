@@ -1,0 +1,19 @@
+{
+	"name": "RestResource2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "RestService2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "/query?function=NEWS_SENTIMENT&tickers=NKE&time_from=20230101T0000&time_to=202301011T2359&limit=1000&delta_days=30&apikey=8GNCH6JME89US00I\n\n\n\n\n\n\n\n",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

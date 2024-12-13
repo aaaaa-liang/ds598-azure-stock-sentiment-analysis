@@ -1,0 +1,22 @@
+{
+	"name": "RestService1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://search.mediacloud.org/",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Basic",
+			"userName": "malao",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVault1",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "598team5key"
+			}
+		}
+	}
+}

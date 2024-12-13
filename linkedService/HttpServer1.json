@@ -1,0 +1,23 @@
+{
+	"name": "HttpServer1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://search.mediacloud.org/",
+			"enableServerCertificateValidation": false,
+			"authenticationType": "Basic",
+			"userName": "bw",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVault1",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "598team5key",
+				"secretVersion": "71fbddae9eb94d6485ceafbe07e3184b"
+			}
+		}
+	}
+}

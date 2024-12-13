@@ -1,0 +1,83 @@
+{
+	"name": "SentimentDataFlowCSV",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "BronzeSentimentCSV",
+						"type": "DatasetReference"
+					},
+					"name": "SentimentSourceCSV"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SilverSentimentData",
+						"type": "DatasetReference"
+					},
+					"name": "Sink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SentimentSelectCSV"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          title as string,",
+				"          url as string,",
+				"          time_published as date 'yyyy-MM-dd',",
+				"          authors as string,",
+				"          summary as string,",
+				"          banner_image as string,",
+				"          source as string,",
+				"          category_within_source as string,",
+				"          source_domain as string,",
+				"          overall_sentiment_score as float,",
+				"          overall_sentiment_label as string,",
+				"          topic as string,",
+				"          relevance_score as float,",
+				"          ticker as string,",
+				"          ticker_relevance_score as float,",
+				"          ticker_sentiment_score as float,",
+				"          ticker_sentiment_label as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SentimentSourceCSV",
+				"SentimentSourceCSV select(mapColumn(",
+				"          title,",
+				"          url,",
+				"          date = time_published,",
+				"          authors,",
+				"          summary,",
+				"          banner_image,",
+				"          source,",
+				"          category_within_source,",
+				"          source_domain,",
+				"          overall_sentiment_score,",
+				"          overall_sentiment_label,",
+				"          topic,",
+				"          relevance_score,",
+				"          ticker,",
+				"          ticker_relevance_score,",
+				"          ticker_sentiment_score,",
+				"          ticker_sentiment_label",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SentimentSelectCSV",
+				"SentimentSelectCSV sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> Sink"
+			]
+		}
+	}
+}

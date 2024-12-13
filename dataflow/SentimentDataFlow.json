@@ -1,0 +1,141 @@
+{
+	"name": "SentimentDataFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "BronzeSentimentJson",
+						"type": "DatasetReference"
+					},
+					"name": "SentimentDataSource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SilverSentimentData",
+						"type": "DatasetReference"
+					},
+					"name": "Sink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "FeedFlatten"
+				},
+				{
+					"name": "TickerFlatten"
+				},
+				{
+					"name": "TopicsFlatten"
+				},
+				{
+					"name": "FilterRelavantColumns"
+				},
+				{
+					"name": "TransformColumns"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          items as string,",
+				"          sentiment_score_definition as string,",
+				"          relevance_score_definition as string,",
+				"          feed as (title as string, url as string, time_published as string, authors as string[], summary as string, banner_image as string, source as string, category_within_source as string, source_domain as string, topics as (topic as string, relevance_score as string)[], overall_sentiment_score as double, overall_sentiment_label as string, ticker_sentiment as (ticker as string, relevance_score as string, ticker_sentiment_score as string, ticker_sentiment_label as string)[])[]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> SentimentDataSource",
+				"SentimentDataSource foldDown(unroll(feed, feed),",
+				"     mapColumn(",
+				"          items,",
+				"          sentiment_score_definition,",
+				"          relevance_score_definition,",
+				"          title = feed.title,",
+				"          url = feed.url,",
+				"          time_published = feed.time_published,",
+				"          authors = feed.authors,",
+				"          summary = feed.summary,",
+				"          banner_image = feed.banner_image,",
+				"          source = feed.source,",
+				"          category_within_source = feed.category_within_source,",
+				"          sourcedomain = feed.source_domain,",
+				"          topics = feed.topics,",
+				"          ticker_sentiment = feed.ticker_sentiment",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> FeedFlatten",
+				"TopicsFlatten foldDown(unroll(ticker_sentiment, ticker_sentiment),",
+				"     mapColumn(",
+				"          items,",
+				"          sentiment_score_definition,",
+				"          relevance_score_definition,",
+				"          title,",
+				"          url,",
+				"          time_published,",
+				"          summary,",
+				"          source,",
+				"          sourcedomain,",
+				"          topic,",
+				"          topic_relevance_score = relevance_score,",
+				"          ticker = ticker_sentiment.ticker,",
+				"          ticker_relevance_score = ticker_sentiment.relevance_score,",
+				"          ticker_sentiment_score = ticker_sentiment.ticker_sentiment_score,",
+				"          ticker_sentiment_label = ticker_sentiment.ticker_sentiment_label,",
+				"          authors,",
+				"          banner_image,",
+				"          category = category_within_source",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> TickerFlatten",
+				"FeedFlatten foldDown(unroll(topics, topics),",
+				"     mapColumn(",
+				"          items,",
+				"          sentiment_score_definition,",
+				"          relevance_score_definition,",
+				"          title,",
+				"          url,",
+				"          time_published,",
+				"          authors,",
+				"          summary,",
+				"          banner_image,",
+				"          source,",
+				"          category_within_source,",
+				"          sourcedomain,",
+				"          topic = topics.topic,",
+				"          relevance_score = topics.relevance_score,",
+				"          ticker_sentiment",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> TopicsFlatten",
+				"TickerFlatten select(mapColumn(",
+				"          title,",
+				"          date = time_published,",
+				"          summary,",
+				"          topic,",
+				"          topic_relevance_score,",
+				"          ticker,",
+				"          ticker_relevance_score,",
+				"          ticker_sentiment_score,",
+				"          ticker_sentiment_label",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> FilterRelavantColumns",
+				"FilterRelavantColumns derive(date = toString(toTimestamp(date, 'yyyyMMdd\\'T\\'HHmmss'), 'yyyy-MM-dd'),",
+				"          topic_relevance_score = toFloat(topic_relevance_score),",
+				"          ticker_relevance_score = toFloat(ticker_relevance_score),",
+				"          ticker_sentiment_score = toFloat(ticker_sentiment_score)) ~> TransformColumns",
+				"TransformColumns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> Sink"
+			]
+		}
+	}
+}
