@@ -1,0 +1,2366 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "598team5datafactory"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://598team5storageaccount.dfs.core.windows.net/"
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://MediaCloud.vault.azure.net/"
+		},
+		"HttpServer1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://search.mediacloud.org/"
+		},
+		"HttpServer1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "bw"
+		},
+		"RestService1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://search.mediacloud.org/"
+		},
+		"RestService1_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "malao"
+		},
+		"RestService2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://www.alphavantage.co"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/DataSentimentPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SentimentDataFlowCSV",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "SentimentDataFlowCSV",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"SentimentSourceCSV": {},
+									"Sink": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-12-08T04:02:13Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/SentimentDataFlowCSV')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataSentimentPipelineAggregate')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SentimentDataFlowCSVAggregate",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "SentimentDataFlowCSVAggregate",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"SentimentSourceCSV": {},
+									"Sink": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/SentimentDataFlowCSVAggregate')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataStockPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "StockDataFlow",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "StockDataFlow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"AdidasStockSource": {},
+									"NikeStockSource": {},
+									"PumaStockSource": {},
+									"UnderArmourStockSource": {},
+									"AllStockSink": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-11-15T06:47:26Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/StockDataFlow')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataTrendPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "TrendData",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "TrendDataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"AdidasTrendSource": {},
+									"NikeTrendSource": {},
+									"PumaTrendSource": {},
+									"UATrendSource": {},
+									"Sink": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-11-14T22:30:34Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/TrendDataflow')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Web1",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://mediacloud.vault.azure.net/secrets/598team5key?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "Copy data2",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Web1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 1
+										},
+										"sink": {
+											"name": "Column1",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DelimitedTextHTTP",
+								"type": "DatasetReference",
+								"parameters": {
+									"cs": "34412234",
+									"query": "\"Nike\"",
+									"start_Date": "\"2022-11-01\"",
+									"end_Date": "\"2024-11-01\""
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-11-20T00:39:41Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DelimitedTextHTTP')]",
+				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Web1",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://mediacloud.vault.azure.net/secrets/proj598?api-version=7.0",
+							"authentication": {
+								"type": "MSI",
+								"resource": "https://vault.azure.net"
+							}
+						}
+					},
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Web1",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"paginationRules": {
+									"supportRFC5988": "true"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "RestResource2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Json2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2024-11-20T01:13:37Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/RestResource2')]",
+				"[concat(variables('factoryId'), '/datasets/Json2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AdidasStockData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "HistoricalStockLayer"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "adidas_data.csv",
+						"folderPath": "bronze/historical_stock",
+						"fileSystem": "team5blob"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Date",
+						"type": "String"
+					},
+					{
+						"name": "Open",
+						"type": "String"
+					},
+					{
+						"name": "High",
+						"type": "String"
+					},
+					{
+						"name": "Low",
+						"type": "String"
+					},
+					{
+						"name": "Close",
+						"type": "String"
+					},
+					{
+						"name": "Adj Close",
+						"type": "String"
+					},
+					{
+						"name": "Volume",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AdidasTrendData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "GoogleTrendsLayers"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "AdidasTrend.csv",
+						"folderPath": "bronze/GoogleTrendsData",
+						"fileSystem": "team5blob"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Category: All categories",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BronzeSentimentCSV')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SentimentLayer"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "cleaned_robust_combined_nke_daily_news_sentiment.csv",
+						"folderPath": "bronze/sentiment_data",
+						"fileSystem": "team5blob"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "title",
+						"type": "String"
+					},
+					{
+						"name": "url",
+						"type": "String"
+					},
+					{
+						"name": "time_published",
+						"type": "String"
+					},
+					{
+						"name": "authors",
+						"type": "String"
+					},
+					{
+						"name": "summary",
+						"type": "String"
+					},
+					{
+						"name": "banner_image",
+						"type": "String"
+					},
+					{
+						"name": "source",
+						"type": "String"
+					},
+					{
+						"name": "category_within_source",
+						"type": "String"
+					},
+					{
+						"name": "source_domain",
+						"type": "String"
+					},
+					{
+						"name": "overall_sentiment_score",
+						"type": "String"
+					},
+					{
+						"name": "overall_sentiment_label",
+						"type": "String"
+					},
+					{
+						"name": "topic",
+						"type": "String"
+					},
+					{
+						"name": "relevance_score",
+						"type": "String"
+					},
+					{
+						"name": "ticker",
+						"type": "String"
+					},
+					{
+						"name": "ticker_relevance_score",
+						"type": "String"
+					},
+					{
+						"name": "ticker_sentiment_score",
+						"type": "String"
+					},
+					{
+						"name": "ticker_sentiment_label",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BronzeSentimentCSVAggregate')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SentimentLayer"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "agreggated_sentiment_data_bronze.csv",
+						"folderPath": "bronze/sentiment_data",
+						"fileSystem": "team5blob"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "title",
+						"type": "String"
+					},
+					{
+						"name": "url",
+						"type": "String"
+					},
+					{
+						"name": "time_published",
+						"type": "String"
+					},
+					{
+						"name": "authors",
+						"type": "String"
+					},
+					{
+						"name": "summary",
+						"type": "String"
+					},
+					{
+						"name": "banner_image",
+						"type": "String"
+					},
+					{
+						"name": "source",
+						"type": "String"
+					},
+					{
+						"name": "category_within_source",
+						"type": "String"
+					},
+					{
+						"name": "source_domain",
+						"type": "String"
+					},
+					{
+						"name": "overall_sentiment_score",
+						"type": "String"
+					},
+					{
+						"name": "overall_sentiment_label",
+						"type": "String"
+					},
+					{
+						"name": "topic",
+						"type": "String"
+					},
+					{
+						"name": "relevance_score",
+						"type": "String"
+					},
+					{
+						"name": "ticker",
+						"type": "String"
+					},
+					{
+						"name": "ticker_relevance_score",
+						"type": "String"
+					},
+					{
+						"name": "ticker_sentiment_score",
+						"type": "String"
+					},
+					{
+						"name": "ticker_sentiment_label",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BronzeSentimentJson')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SentimentLayer"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "cleaned_robust_combined_nke_daily_news_sentiment.json",
+						"folderPath": "bronze/sentiment_data",
+						"fileSystem": "team5blob"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"items": {
+							"type": "string"
+						},
+						"sentiment_score_definition": {
+							"type": "string"
+						},
+						"relevance_score_definition": {
+							"type": "string"
+						},
+						"feed": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"title": {
+										"type": "string"
+									},
+									"url": {
+										"type": "string"
+									},
+									"time_published": {
+										"type": "string"
+									},
+									"authors": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									},
+									"summary": {
+										"type": "string"
+									},
+									"banner_image": {
+										"type": "string"
+									},
+									"source": {
+										"type": "string"
+									},
+									"category_within_source": {
+										"type": "string"
+									},
+									"source_domain": {
+										"type": "string"
+									},
+									"topics": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"topic": {
+													"type": "string"
+												},
+												"relevance_score": {
+													"type": "string"
+												}
+											}
+										}
+									},
+									"overall_sentiment_score": {
+										"type": "number"
+									},
+									"overall_sentiment_label": {
+										"type": "string"
+									},
+									"ticker_sentiment": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"ticker": {
+													"type": "string"
+												},
+												"relevance_score": {
+													"type": "string"
+												},
+												"ticker_sentiment_score": {
+													"type": "string"
+												},
+												"ticker_sentiment_label": {
+													"type": "string"
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "bronze/search.mediacloud.org",
+						"fileSystem": "team5blob"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedTextHTTP')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "HttpServer1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"cs": {
+						"type": "string",
+						"defaultValue": "34412234"
+					},
+					"query": {
+						"type": "string",
+						"defaultValue": "\"Nike\""
+					},
+					"start_Date": {
+						"type": "string",
+						"defaultValue": "\"2022-11-01\""
+					},
+					"end_Date": {
+						"type": "string",
+						"defaultValue": "\"2024-11-01\""
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation",
+						"relativeUrl": {
+							"value": "stories?query=@{dataset().query}&start_date=@{dataset().start_Date}&end_date=@{dataset().end_Date}&collection_ids=34412234\n",
+							"type": "Expression"
+						}
+					},
+					"columnDelimiter": ",",
+					"rowDelimiter": "\n",
+					"escapeChar": "\\",
+					"firstRowAsHeader": false,
+					"quoteChar": null
+				},
+				"schema": [
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/HttpServer1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedTextSink')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "bronze/search.mediacloud.org",
+						"fileSystem": "team5blob"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Json1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "bronze",
+						"fileSystem": "team5blob"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Json2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "bronze/NEWS",
+						"fileSystem": "team5blob"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NikeStockData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "HistoricalStockLayer"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "nike_data.csv",
+						"folderPath": "bronze/historical_stock",
+						"fileSystem": "team5blob"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Date",
+						"type": "String"
+					},
+					{
+						"name": "Open",
+						"type": "String"
+					},
+					{
+						"name": "High",
+						"type": "String"
+					},
+					{
+						"name": "Low",
+						"type": "String"
+					},
+					{
+						"name": "Close",
+						"type": "String"
+					},
+					{
+						"name": "Adj Close",
+						"type": "String"
+					},
+					{
+						"name": "Volume",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/NikeTrendData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "GoogleTrendsLayers"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "NikeTrend.csv",
+						"folderPath": "bronze/GoogleTrendsData",
+						"fileSystem": "team5blob"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Category: All categories",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PumaStockData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "HistoricalStockLayer"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "puma_data.csv",
+						"folderPath": "bronze/historical_stock",
+						"fileSystem": "team5blob"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Date",
+						"type": "String"
+					},
+					{
+						"name": "Open",
+						"type": "String"
+					},
+					{
+						"name": "High",
+						"type": "String"
+					},
+					{
+						"name": "Low",
+						"type": "String"
+					},
+					{
+						"name": "Close",
+						"type": "String"
+					},
+					{
+						"name": "Adj Close",
+						"type": "String"
+					},
+					{
+						"name": "Volume",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PumaTrendData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "GoogleTrendsLayers"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "PumaTrend.csv",
+						"folderPath": "bronze/GoogleTrendsData",
+						"fileSystem": "team5blob"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Category: All categories",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestResource1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "RestService1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": {
+						"value": "search.mediacloud.org/search?q=Nike&nq=&start=01-01-2022&end=11-01-2024&p=onlinenews-mediacloud&ss=&cs=34412234&any=any&name=Nike&edit=false\n\n\n",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/RestService1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestResource2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "RestService2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": {
+						"value": "/query?function=NEWS_SENTIMENT&tickers=NKE&time_from=20230101T0000&time_to=202301011T2359&limit=1000&delta_days=30&apikey=8GNCH6JME89US00I\n\n\n\n\n\n\n\n",
+						"type": "Expression"
+					}
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/RestService2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SilverSentimentData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "SentimentLayer"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "silver/SentimentData_CSV",
+						"fileSystem": "team5blob"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SilverStockData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "HistoricalStockLayer"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "silver",
+						"fileSystem": "team5blob"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SilverTrendData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "GoogleTrendsLayers"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "silver",
+						"fileSystem": "team5blob"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/UATrendData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "GoogleTrendsLayers"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "UATrend.csv",
+						"folderPath": "bronze/GoogleTrendsData",
+						"fileSystem": "team5blob"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Category: All categories",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/UnderArmourStockData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "HistoricalStockLayer"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "under_armour_data.csv",
+						"folderPath": "bronze/historical_stock",
+						"fileSystem": "team5blob"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Date",
+						"type": "String"
+					},
+					{
+						"name": "Open",
+						"type": "String"
+					},
+					{
+						"name": "High",
+						"type": "String"
+					},
+					{
+						"name": "Low",
+						"type": "String"
+					},
+					{
+						"name": "Close",
+						"type": "String"
+					},
+					{
+						"name": "Adj Close",
+						"type": "String"
+					},
+					{
+						"name": "Volume",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureKeyVault1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/HttpServer1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('HttpServer1_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": false,
+					"authenticationType": "Basic",
+					"userName": "[parameters('HttpServer1_properties_typeProperties_userName')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "598team5key",
+						"secretVersion": "71fbddae9eb94d6485ceafbe07e3184b"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVault1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestService1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('RestService1_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Basic",
+					"userName": "[parameters('RestService1_properties_typeProperties_userName')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "598team5key"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVault1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestService2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('RestService2_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SentimentDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "BronzeSentimentJson",
+								"type": "DatasetReference"
+							},
+							"name": "SentimentDataSource"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SilverSentimentData",
+								"type": "DatasetReference"
+							},
+							"name": "Sink"
+						}
+					],
+					"transformations": [
+						{
+							"name": "FeedFlatten"
+						},
+						{
+							"name": "TickerFlatten"
+						},
+						{
+							"name": "TopicsFlatten"
+						},
+						{
+							"name": "FilterRelavantColumns"
+						},
+						{
+							"name": "TransformColumns"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          items as string,",
+						"          sentiment_score_definition as string,",
+						"          relevance_score_definition as string,",
+						"          feed as (title as string, url as string, time_published as string, authors as string[], summary as string, banner_image as string, source as string, category_within_source as string, source_domain as string, topics as (topic as string, relevance_score as string)[], overall_sentiment_score as double, overall_sentiment_label as string, ticker_sentiment as (ticker as string, relevance_score as string, ticker_sentiment_score as string, ticker_sentiment_label as string)[])[]",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> SentimentDataSource",
+						"SentimentDataSource foldDown(unroll(feed, feed),",
+						"     mapColumn(",
+						"          items,",
+						"          sentiment_score_definition,",
+						"          relevance_score_definition,",
+						"          title = feed.title,",
+						"          url = feed.url,",
+						"          time_published = feed.time_published,",
+						"          authors = feed.authors,",
+						"          summary = feed.summary,",
+						"          banner_image = feed.banner_image,",
+						"          source = feed.source,",
+						"          category_within_source = feed.category_within_source,",
+						"          sourcedomain = feed.source_domain,",
+						"          topics = feed.topics,",
+						"          ticker_sentiment = feed.ticker_sentiment",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> FeedFlatten",
+						"TopicsFlatten foldDown(unroll(ticker_sentiment, ticker_sentiment),",
+						"     mapColumn(",
+						"          items,",
+						"          sentiment_score_definition,",
+						"          relevance_score_definition,",
+						"          title,",
+						"          url,",
+						"          time_published,",
+						"          summary,",
+						"          source,",
+						"          sourcedomain,",
+						"          topic,",
+						"          topic_relevance_score = relevance_score,",
+						"          ticker = ticker_sentiment.ticker,",
+						"          ticker_relevance_score = ticker_sentiment.relevance_score,",
+						"          ticker_sentiment_score = ticker_sentiment.ticker_sentiment_score,",
+						"          ticker_sentiment_label = ticker_sentiment.ticker_sentiment_label,",
+						"          authors,",
+						"          banner_image,",
+						"          category = category_within_source",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> TickerFlatten",
+						"FeedFlatten foldDown(unroll(topics, topics),",
+						"     mapColumn(",
+						"          items,",
+						"          sentiment_score_definition,",
+						"          relevance_score_definition,",
+						"          title,",
+						"          url,",
+						"          time_published,",
+						"          authors,",
+						"          summary,",
+						"          banner_image,",
+						"          source,",
+						"          category_within_source,",
+						"          sourcedomain,",
+						"          topic = topics.topic,",
+						"          relevance_score = topics.relevance_score,",
+						"          ticker_sentiment",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> TopicsFlatten",
+						"TickerFlatten select(mapColumn(",
+						"          title,",
+						"          date = time_published,",
+						"          summary,",
+						"          topic,",
+						"          topic_relevance_score,",
+						"          ticker,",
+						"          ticker_relevance_score,",
+						"          ticker_sentiment_score,",
+						"          ticker_sentiment_label",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> FilterRelavantColumns",
+						"FilterRelavantColumns derive(date = toString(toTimestamp(date, 'yyyyMMdd\\'T\\'HHmmss'), 'yyyy-MM-dd'),",
+						"          topic_relevance_score = toFloat(topic_relevance_score),",
+						"          ticker_relevance_score = toFloat(ticker_relevance_score),",
+						"          ticker_sentiment_score = toFloat(ticker_sentiment_score)) ~> TransformColumns",
+						"TransformColumns sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> Sink"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/BronzeSentimentJson')]",
+				"[concat(variables('factoryId'), '/datasets/SilverSentimentData')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SentimentDataFlowCSV')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "BronzeSentimentCSV",
+								"type": "DatasetReference"
+							},
+							"name": "SentimentSourceCSV"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SilverSentimentData",
+								"type": "DatasetReference"
+							},
+							"name": "Sink"
+						}
+					],
+					"transformations": [
+						{
+							"name": "SentimentSelectCSV"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          title as string,",
+						"          url as string,",
+						"          time_published as date 'yyyy-MM-dd',",
+						"          authors as string,",
+						"          summary as string,",
+						"          banner_image as string,",
+						"          source as string,",
+						"          category_within_source as string,",
+						"          source_domain as string,",
+						"          overall_sentiment_score as float,",
+						"          overall_sentiment_label as string,",
+						"          topic as string,",
+						"          relevance_score as float,",
+						"          ticker as string,",
+						"          ticker_relevance_score as float,",
+						"          ticker_sentiment_score as float,",
+						"          ticker_sentiment_label as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> SentimentSourceCSV",
+						"SentimentSourceCSV select(mapColumn(",
+						"          title,",
+						"          url,",
+						"          date = time_published,",
+						"          authors,",
+						"          summary,",
+						"          banner_image,",
+						"          source,",
+						"          category_within_source,",
+						"          source_domain,",
+						"          overall_sentiment_score,",
+						"          overall_sentiment_label,",
+						"          topic,",
+						"          relevance_score,",
+						"          ticker,",
+						"          ticker_relevance_score,",
+						"          ticker_sentiment_score,",
+						"          ticker_sentiment_label",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> SentimentSelectCSV",
+						"SentimentSelectCSV sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> Sink"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/BronzeSentimentCSV')]",
+				"[concat(variables('factoryId'), '/datasets/SilverSentimentData')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SentimentDataFlowCSVAggregate')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "BronzeSentimentCSVAggregate",
+								"type": "DatasetReference"
+							},
+							"name": "SentimentSourceCSV"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SilverSentimentData",
+								"type": "DatasetReference"
+							},
+							"name": "Sink"
+						}
+					],
+					"transformations": [
+						{
+							"name": "SentimentSelectCSV"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          {_c0} as short,",
+						"          title as string,",
+						"          time_published as date,",
+						"          authors as string,",
+						"          source as string,",
+						"          ticker as string,",
+						"          ticker_relevance_score as float,",
+						"          ticker_sentiment_score as float",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> SentimentSourceCSV",
+						"SentimentSourceCSV select(mapColumn(",
+						"          title,",
+						"          date = time_published,",
+						"          authors,",
+						"          source,",
+						"          ticker,",
+						"          ticker_relevance_score,",
+						"          ticker_sentiment_score",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> SentimentSelectCSV",
+						"SentimentSelectCSV sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> Sink"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/BronzeSentimentCSVAggregate')]",
+				"[concat(variables('factoryId'), '/datasets/SilverSentimentData')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/StockDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AdidasStockData",
+								"type": "DatasetReference"
+							},
+							"name": "AdidasStockSource"
+						},
+						{
+							"dataset": {
+								"referenceName": "NikeStockData",
+								"type": "DatasetReference"
+							},
+							"name": "NikeStockSource"
+						},
+						{
+							"dataset": {
+								"referenceName": "PumaStockData",
+								"type": "DatasetReference"
+							},
+							"name": "PumaStockSource"
+						},
+						{
+							"dataset": {
+								"referenceName": "UnderArmourStockData",
+								"type": "DatasetReference"
+							},
+							"name": "UnderArmourStockSource"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SilverStockData",
+								"type": "DatasetReference"
+							},
+							"name": "AllStockSink"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AdidasStockSelect"
+						},
+						{
+							"name": "NikeStockSelect"
+						},
+						{
+							"name": "PumaStockSelect"
+						},
+						{
+							"name": "UnderArmourStockSelect"
+						},
+						{
+							"name": "AdidasNikeStockJoin"
+						},
+						{
+							"name": "PumaStockJoin"
+						},
+						{
+							"name": "UnderArmourStockJoin"
+						},
+						{
+							"name": "AllStockSelect"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Date as date 'yyyy-MM-dd',",
+						"          Open as float,",
+						"          High as float,",
+						"          Low as float,",
+						"          Close as float,",
+						"          {Adj Close} as float,",
+						"          Volume as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> AdidasStockSource",
+						"source(output(",
+						"          Date as date 'yyyy-MM-dd',",
+						"          Open as float,",
+						"          High as float,",
+						"          Low as float,",
+						"          Close as float,",
+						"          {Adj Close} as float,",
+						"          Volume as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> NikeStockSource",
+						"source(output(",
+						"          Date as date 'yyyy-MM-dd',",
+						"          Open as float,",
+						"          High as float,",
+						"          Low as float,",
+						"          Close as float,",
+						"          {Adj Close} as float,",
+						"          Volume as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> PumaStockSource",
+						"source(output(",
+						"          Date as date 'yyyy-MM-dd',",
+						"          Open as float,",
+						"          High as float,",
+						"          Low as float,",
+						"          Close as float,",
+						"          {Adj Close} as float,",
+						"          Volume as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> UnderArmourStockSource",
+						"AdidasStockSource select(mapColumn(",
+						"          Date,",
+						"          Open_Price = Open,",
+						"          Max_Price = High,",
+						"          Min_Price = Low,",
+						"          Close_Price = Close,",
+						"          Adjusted_Close_Price = {Adj Close},",
+						"          Trade_Volume = Volume",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> AdidasStockSelect",
+						"NikeStockSource select(mapColumn(",
+						"          Date,",
+						"          Open_Price = Open,",
+						"          Max_Price = High,",
+						"          Min_Price = Low,",
+						"          Close_Price = Close,",
+						"          Adjusted_Close_Price = {Adj Close},",
+						"          Trade_Volume = Volume",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> NikeStockSelect",
+						"PumaStockSource select(mapColumn(",
+						"          Date,",
+						"          Open_Price = Open,",
+						"          Max_Price = High,",
+						"          Min_Price = Low,",
+						"          Close_Price = Close,",
+						"          Adjusted_Close_Price = {Adj Close},",
+						"          Trade_Volume = Volume",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> PumaStockSelect",
+						"UnderArmourStockSource select(mapColumn(",
+						"          Date,",
+						"          Open_Price = Open,",
+						"          Max_Price = High,",
+						"          Min_Price = Low,",
+						"          Close_Price = Close,",
+						"          Adjusted_Close_Price = {Adj Close},",
+						"          Trade_Volume = Volume",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> UnderArmourStockSelect",
+						"AdidasStockSelect, NikeStockSelect join(AdidasStockSelect@Date == NikeStockSelect@Date,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> AdidasNikeStockJoin",
+						"AdidasNikeStockJoin, PumaStockSelect join(NikeStockSelect@Date == PumaStockSelect@Date,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> PumaStockJoin",
+						"PumaStockJoin, UnderArmourStockSelect join(AdidasStockSelect@Date == UnderArmourStockSelect@Date,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> UnderArmourStockJoin",
+						"UnderArmourStockJoin select(mapColumn(",
+						"          Date = AdidasStockSelect@Date,",
+						"          Adidas_Open_Price = AdidasStockSelect@Open_Price,",
+						"          Adidas_Max_Price = AdidasStockSelect@Max_Price,",
+						"          Adidas_Min_Price = AdidasStockSelect@Min_Price,",
+						"          Adidas_Close_Price = AdidasStockSelect@Close_Price,",
+						"          Adidas_Adjusted_Close_Price = AdidasStockSelect@Adjusted_Close_Price,",
+						"          Adidas_Trade_Volume = AdidasStockSelect@Trade_Volume,",
+						"          Date = NikeStockSelect@Date,",
+						"          Nike_Open_Price = NikeStockSelect@Open_Price,",
+						"          Nike_Max_Price = NikeStockSelect@Max_Price,",
+						"          Nike_Min_Price = NikeStockSelect@Min_Price,",
+						"          Nike_Close_Price = NikeStockSelect@Close_Price,",
+						"          Nike_Adjusted_Close_Price = NikeStockSelect@Adjusted_Close_Price,",
+						"          Nike_Trade_Volume = NikeStockSelect@Trade_Volume,",
+						"          Date = PumaStockSelect@Date,",
+						"          Puma_Open_Price = PumaStockSelect@Open_Price,",
+						"          Puma_Max_Price = PumaStockSelect@Max_Price,",
+						"          Puma_Min_Price = PumaStockSelect@Min_Price,",
+						"          Puma_Close_Price = PumaStockSelect@Close_Price,",
+						"          Puma_Adjusted_Close_Price = PumaStockSelect@Adjusted_Close_Price,",
+						"          Puma_Trade_Volume = PumaStockSelect@Trade_Volume,",
+						"          Date = UnderArmourStockSelect@Date,",
+						"          UA_Open_Price = UnderArmourStockSelect@Open_Price,",
+						"          UA_Max_Price = UnderArmourStockSelect@Max_Price,",
+						"          UA_Min_Price = UnderArmourStockSelect@Min_Price,",
+						"          UA_Close_Price = UnderArmourStockSelect@Close_Price,",
+						"          UA_Adjusted_Close_Price = UnderArmourStockSelect@Adjusted_Close_Price,",
+						"          UA_Trade_Volume = UnderArmourStockSelect@Trade_Volume",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> AllStockSelect",
+						"AllStockSelect sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> AllStockSink"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AdidasStockData')]",
+				"[concat(variables('factoryId'), '/datasets/NikeStockData')]",
+				"[concat(variables('factoryId'), '/datasets/PumaStockData')]",
+				"[concat(variables('factoryId'), '/datasets/UnderArmourStockData')]",
+				"[concat(variables('factoryId'), '/datasets/SilverStockData')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TrendDataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AdidasTrendData",
+								"type": "DatasetReference"
+							},
+							"name": "AdidasTrendSource"
+						},
+						{
+							"dataset": {
+								"referenceName": "NikeTrendData",
+								"type": "DatasetReference"
+							},
+							"name": "NikeTrendSource"
+						},
+						{
+							"dataset": {
+								"referenceName": "PumaTrendData",
+								"type": "DatasetReference"
+							},
+							"name": "PumaTrendSource"
+						},
+						{
+							"dataset": {
+								"referenceName": "UATrendData",
+								"type": "DatasetReference"
+							},
+							"name": "UATrendSource"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SilverTrendData",
+								"type": "DatasetReference"
+							},
+							"name": "Sink"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AdidasSelect"
+						},
+						{
+							"name": "NikeSelect"
+						},
+						{
+							"name": "PumaSelect"
+						},
+						{
+							"name": "UASelect"
+						},
+						{
+							"name": "AdidasDerivedColumn1"
+						},
+						{
+							"name": "AdidasDerivedColumn2"
+						},
+						{
+							"name": "AdidasFlatten"
+						},
+						{
+							"name": "NikeDerivedColumn1"
+						},
+						{
+							"name": "NikeDerivedColumn2"
+						},
+						{
+							"name": "NikeFlatten"
+						},
+						{
+							"name": "PumaDerivedColumn1"
+						},
+						{
+							"name": "PumaDerivedColumn2"
+						},
+						{
+							"name": "PumaFlatten"
+						},
+						{
+							"name": "UAderivedColumn1"
+						},
+						{
+							"name": "UADerivedColumn2"
+						},
+						{
+							"name": "UAFLatten"
+						},
+						{
+							"name": "AdidasNikeJoin"
+						},
+						{
+							"name": "PumaJoin"
+						},
+						{
+							"name": "UAJoin"
+						},
+						{
+							"name": "FinalSelect"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Week as date 'MM/dd/yy',",
+						"          {adidas: (United States)} as short",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> AdidasTrendSource",
+						"source(output(",
+						"          Week as date 'MM/dd/yy',",
+						"          {nike: (United States)} as short",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> NikeTrendSource",
+						"source(output(",
+						"          Week as date 'MM/dd/yy',",
+						"          {puma: (United States)} as short",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> PumaTrendSource",
+						"source(output(",
+						"          Week as date 'MM/dd/yy',",
+						"          {Under Armor: (United States)} as short",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> UATrendSource",
+						"AdidasTrendSource select(mapColumn(",
+						"          Date = Week,",
+						"          Adidas = {adidas: (United States)}",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> AdidasSelect",
+						"NikeTrendSource select(mapColumn(",
+						"          Date = Week,",
+						"          Nike = {nike: (United States)}",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> NikeSelect",
+						"PumaTrendSource select(mapColumn(",
+						"          Date = Week,",
+						"          Puma = {puma: (United States)}",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> PumaSelect",
+						"UATrendSource select(mapColumn(",
+						"          Date = Week,",
+						"          {Under Armor} = {Under Armor: (United States)}",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> UASelect",
+						"AdidasSelect derive(DateDay1 = toString(Date),",
+						"          DateDay2 = toString(addDays(Date, 1)),",
+						"          DateDay3 = toString(addDays(Date, 2)),",
+						"          DateDay4 = toString(addDays(Date, 3)),",
+						"          DateDay5 = toString(addDays(Date, 4)),",
+						"          DateDay6 = toString(addDays(Date, 5)),",
+						"          DateDay7 = toString(addDays(Date, 6))) ~> AdidasDerivedColumn1",
+						"AdidasDerivedColumn1 derive(dateRange = array(DateDay1, DateDay2, DateDay3, DateDay4, DateDay5, DateDay6, DateDay7)) ~> AdidasDerivedColumn2",
+						"AdidasDerivedColumn2 foldDown(unroll(dateRange, dateRange),",
+						"     mapColumn(",
+						"          Date = dateRange,",
+						"          Adidas",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> AdidasFlatten",
+						"NikeSelect derive(DateDay1 = toString(Date),",
+						"          DateDay2 = toString(addDays(Date, 1)),",
+						"          DateDay3 = toString(addDays(Date, 2)),",
+						"          DateDay4 = toString(addDays(Date, 3)),",
+						"          DateDay5 = toString(addDays(Date, 4)),",
+						"          DateDay6 = toString(addDays(Date, 5)),",
+						"          DateDay7 = toString(addDays(Date, 6))) ~> NikeDerivedColumn1",
+						"NikeDerivedColumn1 derive(dateRange = array(DateDay1, DateDay2, DateDay3, DateDay4, DateDay5, DateDay6, DateDay7)) ~> NikeDerivedColumn2",
+						"NikeDerivedColumn2 foldDown(unroll(dateRange, dateRange),",
+						"     mapColumn(",
+						"          Date = dateRange,",
+						"          Nike",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> NikeFlatten",
+						"PumaSelect derive(DateDay1 = toString(Date),",
+						"          DateDay2 = toString(addDays(Date, 1)),",
+						"          DateDay3 = toString(addDays(Date, 2)),",
+						"          DateDay4 = toString(addDays(Date, 3)),",
+						"          DateDay5 = toString(addDays(Date, 4)),",
+						"          DateDay6 = toString(addDays(Date, 5)),",
+						"          DateDay7 = toString(addDays(Date, 6))) ~> PumaDerivedColumn1",
+						"PumaDerivedColumn1 derive(dateRange = array(DateDay1, DateDay2, DateDay3, DateDay4, DateDay5, DateDay6, DateDay7)) ~> PumaDerivedColumn2",
+						"PumaDerivedColumn2 foldDown(unroll(dateRange, dateRange),",
+						"     mapColumn(",
+						"          Date = dateRange,",
+						"          Puma",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> PumaFlatten",
+						"UASelect derive(DateDay1 = toString(Date),",
+						"          DateDay2 = toString(addDays(Date, 1)),",
+						"          DateDay3 = toString(addDays(Date, 2)),",
+						"          DateDay4 = toString(addDays(Date, 3)),",
+						"          DateDay5 = toString(addDays(Date, 4)),",
+						"          DateDay6 = toString(addDays(Date, 5)),",
+						"          DateDay7 = toString(addDays(Date, 6))) ~> UAderivedColumn1",
+						"UAderivedColumn1 derive(dateRange = array(DateDay1, DateDay2, DateDay3, DateDay4, DateDay5, DateDay6, DateDay7)) ~> UADerivedColumn2",
+						"UADerivedColumn2 foldDown(unroll(dateRange, dateRange),",
+						"     mapColumn(",
+						"          Date = dateRange,",
+						"          {Under Armor}",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> UAFLatten",
+						"AdidasFlatten, NikeFlatten join(AdidasFlatten@Date == NikeFlatten@Date,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> AdidasNikeJoin",
+						"AdidasNikeJoin, PumaFlatten join(NikeFlatten@Date == PumaFlatten@Date,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> PumaJoin",
+						"PumaJoin, UAFLatten join(AdidasFlatten@Date == UAFLatten@Date,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> UAJoin",
+						"UAJoin select(mapColumn(",
+						"          Date = AdidasFlatten@Date,",
+						"          Adidas,",
+						"          Nike,",
+						"          Puma,",
+						"          {Under Armor}",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> FinalSelect",
+						"FinalSelect sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> Sink"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AdidasTrendData')]",
+				"[concat(variables('factoryId'), '/datasets/NikeTrendData')]",
+				"[concat(variables('factoryId'), '/datasets/PumaTrendData')]",
+				"[concat(variables('factoryId'), '/datasets/UATrendData')]",
+				"[concat(variables('factoryId'), '/datasets/SilverTrendData')]"
+			]
+		}
+	]
+}
