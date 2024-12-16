@@ -51,7 +51,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "SentimentDataFlowCSV",
+						"name": "SentimentDataFlow",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -64,11 +64,11 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "SentimentDataFlowCSV",
+								"referenceName": "SentimentDataFlow",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"SentimentSourceCSV": {},
+									"SentimentDataSource": {},
 									"Sink": {}
 								}
 							},
@@ -88,7 +88,7 @@
 				"lastPublishTime": "2024-12-08T04:02:13Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/SentimentDataFlowCSV')]"
+				"[concat(variables('factoryId'), '/dataflows/SentimentDataFlow')]"
 			]
 		},
 		{
@@ -1631,7 +1631,9 @@
 						"          category_within_source = feed.category_within_source,",
 						"          sourcedomain = feed.source_domain,",
 						"          topics = feed.topics,",
-						"          ticker_sentiment = feed.ticker_sentiment",
+						"          ticker_sentiment = feed.ticker_sentiment,",
+						"          overall_sentiment_score = feed.overall_sentiment_score,",
+						"          overall_sentiment_label = feed.overall_sentiment_label",
 						"     ),",
 						"     skipDuplicateMapInputs: false,",
 						"     skipDuplicateMapOutputs: false) ~> FeedFlatten",
@@ -1654,7 +1656,9 @@
 						"          ticker_sentiment_label = ticker_sentiment.ticker_sentiment_label,",
 						"          authors,",
 						"          banner_image,",
-						"          category = category_within_source",
+						"          category = category_within_source,",
+						"          overall_sentiment_score,",
+						"          overall_sentiment_label",
 						"     ),",
 						"     skipDuplicateMapInputs: false,",
 						"     skipDuplicateMapOutputs: false) ~> TickerFlatten",
@@ -1674,7 +1678,9 @@
 						"          sourcedomain,",
 						"          topic = topics.topic,",
 						"          relevance_score = topics.relevance_score,",
-						"          ticker_sentiment",
+						"          ticker_sentiment,",
+						"          overall_sentiment_score,",
+						"          overall_sentiment_label",
 						"     ),",
 						"     skipDuplicateMapInputs: false,",
 						"     skipDuplicateMapOutputs: false) ~> TopicsFlatten",
@@ -1687,14 +1693,17 @@
 						"          ticker,",
 						"          ticker_relevance_score,",
 						"          ticker_sentiment_score,",
-						"          ticker_sentiment_label",
+						"          ticker_sentiment_label,",
+						"          overall_sentiment_score,",
+						"          overall_sentiment_label",
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> FilterRelavantColumns",
 						"FilterRelavantColumns derive(date = toString(toTimestamp(date, 'yyyyMMdd\\'T\\'HHmmss'), 'yyyy-MM-dd'),",
 						"          topic_relevance_score = toFloat(topic_relevance_score),",
 						"          ticker_relevance_score = toFloat(ticker_relevance_score),",
-						"          ticker_sentiment_score = toFloat(ticker_sentiment_score)) ~> TransformColumns",
+						"          ticker_sentiment_score = toFloat(ticker_sentiment_score),",
+						"          overall_sentiment_score = toFloat(overall_sentiment_score)) ~> TransformColumns",
 						"TransformColumns sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     umask: 0022,",
