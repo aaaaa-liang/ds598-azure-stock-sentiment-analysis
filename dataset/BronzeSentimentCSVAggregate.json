@@ -1,0 +1,97 @@
+{
+	"name": "BronzeSentimentCSVAggregate",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "SentimentLayer"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "agreggated_sentiment_data_bronze.csv",
+				"folderPath": "bronze/sentiment_data",
+				"fileSystem": "team5blob"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "title",
+				"type": "String"
+			},
+			{
+				"name": "url",
+				"type": "String"
+			},
+			{
+				"name": "time_published",
+				"type": "String"
+			},
+			{
+				"name": "authors",
+				"type": "String"
+			},
+			{
+				"name": "summary",
+				"type": "String"
+			},
+			{
+				"name": "banner_image",
+				"type": "String"
+			},
+			{
+				"name": "source",
+				"type": "String"
+			},
+			{
+				"name": "category_within_source",
+				"type": "String"
+			},
+			{
+				"name": "source_domain",
+				"type": "String"
+			},
+			{
+				"name": "overall_sentiment_score",
+				"type": "String"
+			},
+			{
+				"name": "overall_sentiment_label",
+				"type": "String"
+			},
+			{
+				"name": "topic",
+				"type": "String"
+			},
+			{
+				"name": "relevance_score",
+				"type": "String"
+			},
+			{
+				"name": "ticker",
+				"type": "String"
+			},
+			{
+				"name": "ticker_relevance_score",
+				"type": "String"
+			},
+			{
+				"name": "ticker_sentiment_score",
+				"type": "String"
+			},
+			{
+				"name": "ticker_sentiment_label",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
